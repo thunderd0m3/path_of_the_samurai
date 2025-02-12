@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Quiz Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=New+Tegomin&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div id="game-title" class="game-title">
+            <h1>Path of the Samurai</h1>
+            <p>A journey through feudal Japan</p>
+        </div>
+        <div class="character-status" style="display: none;">
+            <div class="portrait">
+                <img id="characterPortrait" src="" alt="Character Portrait">
+            </div>
+            <div class="health-container">
+                <div class="health-bar">
+                    <div id="healthFill"></div>
+                </div>
+                <div id="healthText">100/100</div>
+            </div>
+        </div>
+        <div id="inventory" style="display: none;">
+            <h3>Inventory</h3>
+            <div id="inventory-slots">
+                <div class="inventory-slot" data-slot="0"></div>
+                <div class="inventory-slot" data-slot="1"></div>
+                <div class="inventory-slot" data-slot="2"></div>
+                <div class="inventory-slot" data-slot="3"></div>
+                <div class="inventory-slot" data-slot="4"></div>
+            </div>
+        </div>
+        <div id="scene">
+            <img id="sceneImage" src="" alt="Scene Image">
+            <div id="content">
+                <p id="description"></p>
+                <div id="choices"></div>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

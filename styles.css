@@ -1,0 +1,232 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #000;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.game-container {
+    max-width: 800px;
+    width: 90%;
+    background-color: #000;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+#sceneImage {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #000;
+}
+
+#description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #ffffff;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#description h1 {
+    font-family: 'New Tegomin', serif;
+    font-size: 42px;
+    color: #ff0000;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+}
+
+#choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.choice-btn {
+    padding: 15px 20px;
+    font-size: 16px;
+    background-color: #111;
+    color: white;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.choice-btn:hover {
+    background-color: #ff0000;
+}
+
+#inventory {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #000;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+}
+
+#inventory h3 {
+    font-family: 'New Tegomin', serif;
+    margin: 0 0 5px 0;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+#inventory-slots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.inventory-slot {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ff0000;
+    border-radius: 3px;
+    background-color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.inventory-slot img {
+    max-width: 35px;
+    max-height: 35px;
+    object-fit: contain;
+}
+
+.inventory-slot .item-name {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    white-space: nowrap;
+    color: #ffffff;
+}
+
+.character-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #000;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+}
+
+.portrait {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ff0000;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.health-container {
+    flex-grow: 1;
+}
+
+.health-bar {
+    width: 100%;
+    height: 15px;
+    background-color: #ff0000;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#healthFill {
+    width: 100%;
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.3s ease;
+}
+
+#healthText {
+    text-align: center;
+    margin-top: 2px;
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.character-select-btn {
+    background-color: #111;
+    padding: 30px;
+    text-align: center;
+    width: 300px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.character-select-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+.character-select-btn img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4CAF50;
+}
+
+.character-select-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px 0;
+}
+
+.game-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.game-title h1 {
+    font-family: 'New Tegomin', serif;
+    font-size: 42px;
+    color: #ff0000;
+    margin: 0;
+    line-height: 1.2;
+    margin-bottom: 30px;
+}
+
+.game-title p {
+    font-size: 24px;
+    color: #666;
+    margin: 0;
+}
+
+.character-select-btn h2 {
+    font-family: 'New Tegomin', serif;
+    margin: 15px 0 10px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.character-select-btn p {
+    color: #ffffff;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+}

@@ -1,0 +1,3 @@
+mkdir -p images/scenes
+mkdir -p images/items
+mkdir -p images/portraits
