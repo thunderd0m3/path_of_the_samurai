@@ -122,6 +122,40 @@ class Game {
             ]
         ));
 
+        // Update the ancient book scene with reset functionality
+        this.scenes.set('nextLocation', new Scene(
+            'nextLocation',
+            'images/ancient_book.png',
+            '<h1>Discovering the Ancient Book</h1>After traveling through the rugged terrain, you arrive at a forgotten temple deep in the forest. Inside, covered in dust, you find an ancient book. The book whispers of samurai, shoguns, and battles of the past. Will you open it and learn its secrets?',
+            [
+                {
+                    text: 'Open the book',
+                    onSelect: () => {
+                        window.open('https://docs.google.com/presentation/d/1GXCXCIZ_mvS0GuxWLb2960mZiZLkpCbSByCxyNXBDfo/copy', '_blank');
+                        this.addToInventory({
+                            id: 'ancient_book',
+                            name: 'Ancient Book',
+                            image: 'images/ancient_book_inventory.png',
+                            onClick: () => window.open('https://docs.google.com/presentation/d/1GXCXCIZ_mvS0GuxWLb2960mZiZLkpCbSByCxyNXBDfo/copy', '_blank')
+                        });
+                        return false;  // Prevents scene change
+                    }
+                },
+                {
+                    text: 'Continue',
+                    nextScene: 'finalScene'
+                },
+                {
+                    text: 'Back to Start',
+                    onSelect: () => {
+                        this.resetGame();  // This will reset health and clear inventory
+                        return true;  // Allow scene change to happen
+                    },
+                    nextScene: 'characterSelect'
+                }
+            ]
+        ));
+
         // Add more scenes here
     }
 
@@ -155,6 +189,10 @@ class Game {
                     <img src="${item.image}" alt="${item.name}">
                     <div class="item-name">${item.name}</div>
                 `;
+                if (item.onClick) {
+                    slot.style.cursor = 'pointer';
+                    slot.addEventListener('click', item.onClick);
+                }
             }
         });
     }
