@@ -17,6 +17,12 @@ class Game {
         this.maxHealth = 100;
         this.currentHealth = 100;
         this.selectedCharacter = null;
+        this.gameOverMessages = [
+            'Samurai Spirit: <i>"The way of the Samurai is never without struggle. Stand firm, warrior. The spirits of your anscestors await to guide you back to the start."</i>',
+            'Enigmatic Sage: <i>"The journey to mastery is never swift. Let the winds of the ancient spirits guide your steps as you begin again."</i>',
+            'Guardian Spirit: <i>"Your journey has faltered, but the path remains. Rise with honor, for the spirits of the old warriors will watch over your next steps."</i>',
+            'The Honorable Foe: <i>"Your skill is not yet perfected. Return to the beginning, where your honor can be sharpened like the blade of a katana."</i>'
+        ];
         this.initializeScenes();
         this.updateHealthDisplay();
         this.hideGameElements();
@@ -215,6 +221,28 @@ class Game {
             ]
         ));
 
+        // Update the game over scene to use random description
+        this.scenes.set('gameOverScene', new Scene(
+            'gameOverScene',
+            () => this.selectedCharacter === 'images/female_samurai_portrait.jpg'
+                ? 'images/female_samurai_lose.jpg'
+                : 'images/male_samurai_lose.jpg',
+            () => {
+                const randomIndex = Math.floor(Math.random() * this.gameOverMessages.length);
+                return `<h1>Game Over</h1>${this.gameOverMessages[randomIndex]}`;
+            },
+            [
+                {
+                    text: 'Try Again',
+                    onSelect: () => {
+                        this.resetGame();
+                        return true;
+                    },
+                    nextScene: 'characterSelect'
+                }
+            ]
+        ));
+
         // Add more scenes here
     }
 
@@ -275,15 +303,30 @@ class Game {
         this.currentScene = this.scenes.get(sceneId);
         if (!this.currentScene) return;
 
+        // Hide health and inventory for character select and game over scenes
+        if (sceneId === 'characterSelect' || sceneId === 'gameOverScene') {
+            document.querySelector('.character-status').style.display = 'none';
+            document.getElementById('inventory').style.display = 'none';
+        } else {
+            document.querySelector('.character-status').style.display = 'flex';
+            document.getElementById('inventory').style.display = 'block';
+        }
+
         const sceneImage = document.getElementById('sceneImage');
         if (sceneId === 'characterSelect') {
             sceneImage.style.display = 'none';
         } else {
             sceneImage.style.display = 'block';
-            sceneImage.src = this.currentScene.image || '';
+            // Handle both function and string image paths
+            const imagePath = typeof this.currentScene.image === 'function'
+                ? this.currentScene.image()
+                : this.currentScene.image;
+            sceneImage.src = imagePath || '';
         }
 
-        document.getElementById('description').innerHTML = this.currentScene.description;
+        document.getElementById('description').innerHTML = typeof this.currentScene.description === 'function'
+            ? this.currentScene.description()
+            : this.currentScene.description;
 
         const choicesDiv = document.getElementById('choices');
         choicesDiv.innerHTML = '';
@@ -406,8 +449,7 @@ class Game {
         this.updateHealthDisplay();
 
         if (this.currentHealth <= 0) {
-            alert('Game Over! You ran out of health!');
-            this.resetGame();
+            this.showScene('gameOverScene');  // Show game over scene instead of alert
         }
     }
 
