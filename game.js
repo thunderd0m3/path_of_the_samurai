@@ -24,6 +24,8 @@ class Game {
             'Guardian Spirit: <i>"Your journey has faltered, but the path remains. Rise with honor, for the spirits of the old warriors will watch over your next steps."</i>',
             'The Honorable Foe: <i>"Your skill is not yet perfected. Return to the beginning, where your honor can be sharpened like the blade of a katana."</i>'
         ];
+        this.maxBossHealth = 50;
+        this.currentBossHealth = 50;
         this.initializeScenes();
         this.updateHealthDisplay();
         this.hideGameElements();
@@ -399,6 +401,35 @@ class Game {
             ]
         ));
 
+        // Update the final battle scene with new quiz options
+        this.scenes.set('finalBattle', new Scene(
+            'finalBattle',
+            'images/oni.png',
+            '<h1>Boss Battle</h1>Question: What caused the Japanese emperor\'s power to weaken in the 800s?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'The emperor voluntarily gave up power',
+                        'The samurai overthrew the emperor',
+                        'Regents governed in place of the emperor',
+                        'Japan was invaded by Mongols'
+                    ],
+                    correct: 'Regents governed in place of the emperor',
+                    onCorrect: () => this.takeBossDamage(10),
+                    damage: 15,
+                    nextScene: 'finalBattle2'
+                }
+            ],
+            null,
+            () => {
+                // Create boss health bar when scene loads
+                this.currentBossHealth = 50;  // Reset boss health
+                this.createBossHealthUI(document.getElementById('description'));
+            }
+        ));
+
         // Add more scenes here
     }
 
@@ -620,6 +651,41 @@ class Game {
         this.updateHealthDisplay();
         this.updateInventoryDisplay();
         this.start();
+    }
+
+    takeBossDamage(amount) {
+        this.currentBossHealth = Math.max(0, this.currentBossHealth - amount);
+        this.updateBossHealthDisplay();
+
+        if (this.currentBossHealth <= 0) {
+            this.showScene('victoryScene');  // We'll create this later
+        }
+    }
+
+    updateBossHealthDisplay() {
+        const bossHealthBar = document.querySelector('.boss-health-bar');
+        const bossHealthText = document.querySelector('.boss-health-text');
+        const healthPercentage = (this.currentBossHealth / this.maxBossHealth) * 100;
+
+        bossHealthBar.style.width = `${healthPercentage}%`;
+        bossHealthText.textContent = `Boss HP: ${this.currentBossHealth}/${this.maxBossHealth}`;
+    }
+
+    createBossHealthUI(container) {
+        const bossHealthContainer = document.createElement('div');
+        bossHealthContainer.className = 'boss-health-container';
+
+        const bossHealthBar = document.createElement('div');
+        bossHealthBar.className = 'boss-health-bar';
+
+        const bossHealthText = document.createElement('div');
+        bossHealthText.className = 'boss-health-text';
+
+        bossHealthContainer.appendChild(bossHealthBar);
+        bossHealthContainer.appendChild(bossHealthText);
+        container.insertBefore(bossHealthContainer, container.firstChild);
+
+        this.updateBossHealthDisplay();
     }
 }
 
