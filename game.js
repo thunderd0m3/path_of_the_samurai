@@ -136,7 +136,7 @@ class Game {
             ]
         ));
 
-        // Update the feudal Japan scene to handle both disabled options
+        // Update the feudal Japan scene to handle all three disabled options
         this.scenes.set('feudalJapanScene', new Scene(
             'feudalJapanScene',
             'images/feudal_japan.png',
@@ -154,7 +154,8 @@ class Game {
                 },
                 {
                     text: 'Forest',
-                    nextScene: 'forestScene'
+                    nextScene: 'forestScene',
+                    isDisabled: () => this.inventory.some(item => item.id === 'helmet')
                 }
             ]
         ));
@@ -208,7 +209,7 @@ class Game {
             '<h1>The Dojo (Katana)</h1>You have completed your training at the dojo and earned the trust of the samurai master. As a reward, you are gifted a katana, a symbol of your newfound skill and honor',
             [
                 {
-                    text: 'Return to the village',
+                    text: 'Accept the katana',
                     onSelect: () => {
                         this.addToInventory({
                             id: 'katana',
@@ -271,7 +272,7 @@ class Game {
             '<h1>The Marketplace (Armor)</h1>After talking and trading with the merchants in the bustling marketplace, you purchase strong armor that will protect you in battle. The armor symbolizes the importance of the warrior\'s defense in times of war.',
             [
                 {
-                    text: 'Return to the village',
+                    text: 'Purchase the armor',
                     onSelect: () => {
                         this.addToInventory({
                             id: 'armor',
@@ -303,6 +304,70 @@ class Game {
                         return true;
                     },
                     nextScene: 'characterSelect'
+                }
+            ]
+        ));
+
+        // Update the first forest scene with storm quiz options
+        this.scenes.set('forestScene', new Scene(
+            'forestScene',
+            'images/forest.png',  // Update to use the forest image
+            '<h1>The Forest (Battle & Challenges)</h1>Nature is important to Japanese culture. You decide to wander the forest in an attempt to clear your mind and determine the best path forward. Night suddenly falls upon you and a mysterious bandit leaps from the brush. He challenges you to a duel. But it is not a duel of steel he wants. It is a duel of wits! You must defeat him!<br><br>In 1274 and 1281, Mongols invade, but typhoons destroy their fleets.<br>Question: What did the Japanese call these storms?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Tsunami',
+                        'Kamikaze',
+                        'Monsoon'
+                    ],
+                    correct: 'Kamikaze',
+                    damage: 15,
+                    nextScene: 'forestScene2'
+                }
+            ]
+        ));
+
+        // Rename and update comment for the existing scene
+        // Update forest scene 2 with feudal system quiz options
+        this.scenes.set('forestScene2', new Scene(
+            'forestScene2',
+            'images/forest.png',  // Update to use the forest image
+            '<h1>The Forest (Battle & Challenges)</h1>As shogunate power weakens, daimyo rule like independent warlords.<br><br>Question: What system described loyalty between a samurai and a daimyo?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Guilds',
+                        'Buddhism',
+                        'Feudalism'
+                    ],
+                    correct: 'Feudalism',
+                    damage: 15,
+                    nextScene: 'forestScene3'
+                }
+            ]
+        ));
+
+        // Update the third forest scene with correct helmet image
+        this.scenes.set('forestScene3', new Scene(
+            'forestScene3',
+            'images/finding_helmet.jpg',
+            '<h1>The Forest (Battle & Challenges)</h1>Your duel with the bandit has proven your bravery and the bandit steps into the light and you see it is actually Tomoe, the famous female samurai, in disguise. She gives you her very own samurai helmet to help you on your journey.',
+            [
+                {
+                    text: 'Accept the helmet',
+                    onSelect: () => {
+                        this.addToInventory({
+                            id: 'helmet',
+                            name: 'Samurai Helmet',
+                            image: 'images/helmet.jpg'  // Update to use the new helmet image
+                        });
+                        return true;
+                    },
+                    nextScene: 'feudalJapanScene'
                 }
             ]
         ));
