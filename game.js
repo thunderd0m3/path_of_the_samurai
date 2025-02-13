@@ -139,7 +139,7 @@ class Game {
             ]
         ));
 
-        // Update the feudal Japan scene to check for all items
+        // Update the feudal Japan scene with skip option
         this.scenes.set('feudalJapanScene', new Scene(
             'feudalJapanScene',
             'images/feudal_japan.png',
@@ -159,6 +159,29 @@ class Game {
                     text: 'Forest',
                     nextScene: 'forestScene',
                     isDisabled: () => this.inventory.some(item => item.id === 'helmet')
+                },
+                {
+                    text: '[DEBUG] Skip to Boss',
+                    onSelect: () => {
+                        // Add all required items to inventory
+                        this.addToInventory({
+                            id: 'katana',
+                            name: 'Katana',
+                            image: 'images/katana.jpg'
+                        });
+                        this.addToInventory({
+                            id: 'armor',
+                            name: 'Samurai Armor',
+                            image: 'images/armor.jpg'
+                        });
+                        this.addToInventory({
+                            id: 'helmet',
+                            name: 'Samurai Helmet',
+                            image: 'images/helmet.jpg'
+                        });
+                        return true;
+                    },
+                    nextScene: 'prepareForBattle'
                 }
             ],
             null,
