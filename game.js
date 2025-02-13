@@ -181,6 +181,12 @@ class Game {
     }
 
     addToInventory(item) {
+        // Check if item already exists in inventory
+        const itemExists = this.inventory.some(existingItem => existingItem.id === item.id);
+        if (itemExists) {
+            return false;
+        }
+
         if (this.inventory.length >= this.maxInventorySize) {
             alert('Inventory is full!');
             return false;
