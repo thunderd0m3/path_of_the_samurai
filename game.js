@@ -117,7 +117,7 @@ class Game {
                 },
                 {
                     text: 'Continue',
-                    nextScene: 'finalScene'
+                    nextScene: 'feudalJapanScene'
                 },
                 {
                     text: 'Back to Start',
@@ -130,15 +130,16 @@ class Game {
             ]
         ));
 
-        // Update the final scene with only location choices
-        this.scenes.set('finalScene', new Scene(
-            'finalScene',
+        // Update the feudal Japan scene to handle disabled dojo option
+        this.scenes.set('feudalJapanScene', new Scene(
+            'feudalJapanScene',
             'images/feudal_japan.png',
-            '<h1>Arriving in Feudal Japan</h1>You have been transported to the year 1185, during a time of samurai and shoguns.\n\nWhere will you choose to explore?\n\nVisit the Dojo, the marketplace, or venture into the Forest.',
+            '<h1>Arriving in Feudal Japan</h1>You have been transported to the year 1185, during a time of samurai and shoguns.<br><br>Where will you choose to explore?<br><br>Visit the Dojo, the marketplace, or venture into the Forest.',
             [
                 {
                     text: 'Dojo',
-                    nextScene: 'dojoScene'
+                    nextScene: 'dojoScene',
+                    isDisabled: () => this.inventory.some(item => item.id === 'katana')
                 },
                 {
                     text: 'Marketplace',
@@ -147,6 +148,69 @@ class Game {
                 {
                     text: 'Forest',
                     nextScene: 'forestScene'
+                }
+            ]
+        ));
+
+        // Update the first Dojo scene to point to the second one
+        this.scenes.set('dojoScene', new Scene(
+            'dojoScene',
+            'images/dojo.jpg',
+            '<h1>The Dojo (Samurai code of honor)</h1>A samurai master invites you to learn about the way of the warrior.<br><br>He has some questions for you to see if you are worthy of a true samurai.<br><br>Question: What is the Samurai code of honor called?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Feudalism',
+                        'Bushido',
+                        'Shinto'
+                    ],
+                    correct: 'Bushido',
+                    damage: 15,
+                    nextScene: 'dojoScene2'  // Changed from feudalJapanScene to dojoScene2
+                }
+            ]
+        ));
+
+        // Update the second Dojo scene to point to third scene
+        this.scenes.set('dojoScene2', new Scene(
+            'dojoScene2',
+            'images/dojo.jpg',
+            '<h1>The Dojo (Rise of the Shogunate)</h1>The emperor rewards Minamoto Yorimoto by making him shogun in 1192, beginning 700 years of shogunate rule.<br><br>Question: What was the role of the shogun?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Farmer leader',
+                        'Emperor\'s servant',
+                        'Military ruler of Japan'
+                    ],
+                    correct: 'Military ruler of Japan',
+                    damage: 15,
+                    nextScene: 'dojoScene3'  // Changed from feudalJapanScene to dojoScene3
+                }
+            ]
+        ));
+
+        // Update the third Dojo scene to add katana to inventory
+        this.scenes.set('dojoScene3', new Scene(
+            'dojoScene3',
+            'images/samurai_receive_katana.jpg',
+            '<h1>The Dojo (Katana)</h1>You have completed your training at the dojo and earned the trust of the samurai master. As a reward, you are gifted a katana, a symbol of your newfound skill and honor',
+            [
+                {
+                    text: 'Return to the village',
+                    onSelect: () => {
+                        this.addToInventory({
+                            id: 'katana',
+                            name: 'Katana',
+                            image: 'images/katana.jpg'
+                        });
+                        return true;  // Allow scene change
+                    },
+                    nextScene: 'feudalJapanScene'
                 }
             ]
         ));
@@ -283,12 +347,20 @@ class Game {
         const button = document.createElement('button');
         button.className = 'choice-btn';
         button.textContent = choice.text;
-        button.addEventListener('click', () => {
-            if (choice.onSelect) {
-                choice.onSelect();
-            }
-            this.showScene(choice.nextScene);
-        });
+
+        // Check if button should be disabled
+        if (choice.isDisabled && choice.isDisabled()) {
+            button.disabled = true;
+            button.classList.add('disabled');
+        } else {
+            button.addEventListener('click', () => {
+                if (choice.onSelect) {
+                    choice.onSelect();
+                }
+                this.showScene(choice.nextScene);
+            });
+        }
+
         container.appendChild(button);
     }
 
