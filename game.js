@@ -156,6 +156,27 @@ class Game {
             ]
         ));
 
+        // Update the final scene with only location choices
+        this.scenes.set('finalScene', new Scene(
+            'finalScene',
+            'images/feudal_japan.png',
+            '<h1>Arriving in Feudal Japan</h1>You have been transported to the year 1185, during a time of samurai and shoguns.\n\nWhere will you choose to explore?\n\nVisit the Dojo, the marketplace, or venture into the Forest.',
+            [
+                {
+                    text: 'Dojo',
+                    nextScene: 'dojoScene'
+                },
+                {
+                    text: 'Marketplace',
+                    nextScene: 'marketScene'
+                },
+                {
+                    text: 'Forest',
+                    nextScene: 'forestScene'
+                }
+            ]
+        ));
+
         // Add more scenes here
     }
 
