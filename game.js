@@ -75,32 +75,6 @@ class Game {
             ]
         ));
 
-        // Main hall scene with a quiz
-        this.scenes.set('mainHall', new Scene(
-            'mainHall',
-            'images/scenes/main-hall.jpg',
-            'The grand hall is filled with ancient artifacts. A mysterious inscription catches your eye.',
-            [
-                {
-                    text: 'Decipher the inscription',
-                    isQuiz: true,
-                    options: [
-                        'Speak friend and enter',
-                        'Beware the dragon\'s wrath',
-                        'Time reveals all secrets',
-                        'Knowledge is power'
-                    ],
-                    correct: 'Time reveals all secrets',
-                    damage: 15,
-                    nextScene: 'libraryEntrance'
-                },
-                {
-                    text: 'Explore a different room',
-                    nextScene: 'diningHall'
-                }
-            ]
-        ));
-
         // Update the North Region scene
         this.scenes.set('northRegion', new Scene(
             'northRegion',
