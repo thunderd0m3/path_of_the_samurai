@@ -371,8 +371,7 @@ class Game {
             button.textContent = option;
             button.addEventListener('click', () => {
                 if (option === quiz.correct) {
-                    alert('Correct!');
-                    this.showScene(quiz.nextScene);
+                    this.showScene(quiz.nextScene);  // Just move to next scene without alert
                 } else {
                     alert('Wrong answer! Try again.');
                     // Apply damage if specified
