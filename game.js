@@ -251,8 +251,7 @@ class Game {
             if (this.inventory[index]) {
                 const item = this.inventory[index];
                 slot.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="item-name">${item.name}</div>
+                    <img src="${item.image}" alt="${item.name}" title="${item.name}">
                 `;
                 if (item.onClick) {
                     slot.style.cursor = 'pointer';
