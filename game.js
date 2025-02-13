@@ -1,10 +1,11 @@
 class Scene {
-    constructor(id, image, description, choices, items) {
+    constructor(id, image, description, choices, items, onLoad) {
         this.id = id;
         this.image = image;
         this.description = description;
         this.choices = choices;
         this.items = items || []; // Items that can be collected in this scene
+        this.onLoad = onLoad;
     }
 }
 
@@ -136,7 +137,7 @@ class Game {
             ]
         ));
 
-        // Update the feudal Japan scene to handle all three disabled options
+        // Update the feudal Japan scene to check for all items
         this.scenes.set('feudalJapanScene', new Scene(
             'feudalJapanScene',
             'images/feudal_japan.png',
@@ -157,7 +158,18 @@ class Game {
                     nextScene: 'forestScene',
                     isDisabled: () => this.inventory.some(item => item.id === 'helmet')
                 }
-            ]
+            ],
+            null,
+            () => {
+                // Check if all items are collected
+                const hasAllItems = this.inventory.some(item => item.id === 'katana') &&
+                                  this.inventory.some(item => item.id === 'armor') &&
+                                  this.inventory.some(item => item.id === 'helmet');
+
+                if (hasAllItems) {
+                    this.showScene('prepareForBattle');
+                }
+            }
         ));
 
         // Update the first Dojo scene to point to the second one
@@ -372,6 +384,21 @@ class Game {
             ]
         ));
 
+        // Update the prepare for battle scene with new button text
+        this.scenes.set('prepareForBattle', new Scene(
+            'prepareForBattle',
+            () => this.selectedCharacter === 'images/female_samurai_portrait.jpg'
+                ? 'images/female_ready_for_battle.jpg'
+                : 'images/male_ready_for_battle.jpg',
+            '<h1>Prepare for Battle</h1><i>Steel meets morning light,<br>winds whisper of fate untold,<br>honor guides my hand.<br><br>Shadows fall behind,<br>the path ahead shines clearly,<br>no fear, only now.<br><br>Blade and spirit one,<br>the final stand approaches,<br>duty never fades.</i>',
+            [
+                {
+                    text: 'Fight the final boss',
+                    nextScene: 'finalBattle'
+                }
+            ]
+        ));
+
         // Add more scenes here
     }
 
@@ -511,6 +538,11 @@ class Game {
             });
 
             document.getElementById('choices').appendChild(itemsDiv);
+        }
+
+        // Call onLoad function if it exists
+        if (this.currentScene.onLoad) {
+            this.currentScene.onLoad();
         }
     }
 
