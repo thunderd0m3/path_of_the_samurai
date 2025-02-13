@@ -136,7 +136,7 @@ class Game {
             ]
         ));
 
-        // Update the feudal Japan scene to handle disabled dojo option
+        // Update the feudal Japan scene to handle both disabled options
         this.scenes.set('feudalJapanScene', new Scene(
             'feudalJapanScene',
             'images/feudal_japan.png',
@@ -149,7 +149,8 @@ class Game {
                 },
                 {
                     text: 'Marketplace',
-                    nextScene: 'marketScene'
+                    nextScene: 'marketScene',
+                    isDisabled: () => this.inventory.some(item => item.id === 'armor')
                 },
                 {
                     text: 'Forest',
@@ -213,6 +214,69 @@ class Game {
                             id: 'katana',
                             name: 'Katana',
                             image: 'images/katana.jpg'
+                        });
+                        return true;  // Allow scene change
+                    },
+                    nextScene: 'feudalJapanScene'
+                }
+            ]
+        ));
+
+        // Update the market scene with new quiz options
+        this.scenes.set('marketScene', new Scene(
+            'marketScene',
+            'images/marketplace.png',
+            '<h1>The Marketplace (Economic Growth)</h1>You enter the marketplace looking for items (and perhaps some knowledge) you may need to complete your journey. Merchants are trading silk, weapons, and rice. Japan\'s economy is growing, but who benefits the most?<br><br>Question: Who enjoyed most of Japan\'s wealth during the shogunate?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Farmers',
+                        'Shoguns and noble families',
+                        'Samurai'
+                    ],
+                    correct: 'Shoguns and noble families',
+                    damage: 15,
+                    nextScene: 'marketScene2'
+                }
+            ]
+        ));
+
+        // Update the second market scene with religion quiz options
+        this.scenes.set('marketScene2', new Scene(
+            'marketScene2',
+            'images/marketplace.png',
+            '<h1>The Marketplace (Religion & Culture)</h1>While browsing the market, you come across many shoppers with different religions and belief systems. Maybe you can find some important cultural knowledge here as well.<br><br>Question: Which religion focused on self-discipline and meditation?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Mahayana',
+                        'Shinto',
+                        'Zen Buddhism'
+                    ],
+                    correct: 'Zen Buddhism',
+                    damage: 15,
+                    nextScene: 'marketScene3'
+                }
+            ]
+        ));
+
+        // Update the third market scene to add armor to inventory
+        this.scenes.set('marketScene3', new Scene(
+            'marketScene3',
+            'images/buying_armor.jpg',
+            '<h1>The Marketplace (Armor)</h1>After talking and trading with the merchants in the bustling marketplace, you purchase strong armor that will protect you in battle. The armor symbolizes the importance of the warrior\'s defense in times of war.',
+            [
+                {
+                    text: 'Return to the village',
+                    onSelect: () => {
+                        this.addToInventory({
+                            id: 'armor',
+                            name: 'Samurai Armor',
+                            image: 'images/armor.jpg'
                         });
                         return true;  // Allow scene change
                     },
