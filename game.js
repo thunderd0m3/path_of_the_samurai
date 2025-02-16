@@ -27,6 +27,7 @@ class Game {
         this.maxBossHealth = 50;
         this.currentBossHealth = 50;
         this.bossHitCount = 0;  // Track number of successful hits
+        this.currentBattle = 1;  // Track which battle question we're on
         this.initializeScenes();
         this.updateHealthDisplay();
         this.hideGameElements();
@@ -425,7 +426,7 @@ class Game {
             ]
         ));
 
-        // Update the boss attack scene to remove damage
+        // Update the boss attack scene with onSelect handler
         this.scenes.set('bossAttackScene', new Scene(
             'bossAttackScene',
             'images/oni_miss.png',
@@ -433,12 +434,16 @@ class Game {
             [
                 {
                     text: 'Continue fighting',
-                    nextScene: 'finalBattle'
+                    onSelect: () => {
+                        const nextScene = `finalBattle${this.currentBattle}`;
+                        this.showScene(nextScene);
+                        return false;  // Prevent default scene transition
+                    }
                 }
             ]
         ));
 
-        // Update the player attack scene with conditional button text
+        // Update the player attack scene with fixed battle progression
         this.scenes.set('playerAttackScene', new Scene(
             'playerAttackScene',
             'images/oni_hit.png',
@@ -463,16 +468,17 @@ class Game {
                         // Check if this was the final hit
                         if (this.currentBossHealth <= 0) {
                             this.showScene('victoryScene');
-                            return false;  // Prevent default scene transition
+                            return false;
                         }
-                        return true;
-                    },
-                    nextScene: 'finalBattle'
+                        this.currentBattle++;  // Increment battle number
+                        this.showScene(`finalBattle${this.currentBattle}`);  // Go directly to next battle
+                        return false;  // Prevent default scene transition
+                    }
                 }
             ]
         ));
 
-        // Update the final battle scene with fixed boss damage
+        // Update the first battle scene to set battle number
         this.scenes.set('finalBattle', new Scene(
             'finalBattle',
             'images/oni.png',
@@ -491,18 +497,19 @@ class Game {
                     onCorrect: () => {
                         this.takeBossDamage(10);
                         this.updateBossHealthDisplay();
+                        this.currentBattle = 1;  // Set current battle number
                         this.showScene('playerAttackScene');
                     },
                     onIncorrect: () => {
                         this.takeDamage(10);
                         this.showScene('bossAttackScene');
                     },
-                    damage: 10,
-                    nextScene: 'finalBattle2'
+                    damage: 10
                 }
             ],
             null,
             () => {
+                this.currentBattle = 1;  // Also set battle number when scene loads
                 this.createBossHealthUI(document.getElementById('description'));
             }
         ));
@@ -522,6 +529,150 @@ class Game {
                     nextScene: 'characterSelect'
                 }
             ]
+        ));
+
+        // Update the second battle scene to set battle number
+        this.scenes.set('finalBattle2', new Scene(
+            'finalBattle2',
+            'images/oni.png',
+            '<h1>Boss Battle</h1>How did Minamoto Yoritomo become Japan\'s first Shogun?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'He defeated the Taira family and was appointed by the emperor',
+                        'He inherited the title from his father',
+                        'He overthrew the emperor and took the throne',
+                        'He was elected by the people'
+                    ],
+                    correct: 'He defeated the Taira family and was appointed by the emperor',
+                    onCorrect: () => {
+                        this.takeBossDamage(10);
+                        this.updateBossHealthDisplay();
+                        this.currentBattle = 2;  // Set current battle number
+                        this.showScene('playerAttackScene');
+                    },
+                    onIncorrect: () => {
+                        this.takeDamage(10);
+                        this.showScene('bossAttackScene');
+                    },
+                    damage: 10
+                }
+            ],
+            null,
+            () => {
+                this.currentBattle = 2;  // Also set battle number when scene loads
+                this.createBossHealthUI(document.getElementById('description'));
+            }
+        ));
+
+        // Add the third final battle scene
+        this.scenes.set('finalBattle3', new Scene(
+            'finalBattle3',
+            'images/oni.png',
+            '<h1>Boss Battle</h1>What was a major reason for economic growth during the shogunate period?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Samurai controlled all businesses',
+                        'Japan focused entirely on military conquest',
+                        'Peasants became wealthy land owners',
+                        'Improved irrigation led to increased agricultural production'
+                    ],
+                    correct: 'Improved irrigation led to increased agricultural production',
+                    onCorrect: () => {
+                        this.takeBossDamage(10);
+                        this.updateBossHealthDisplay();
+                        this.currentBattle = 3;  // Set current battle number
+                        this.showScene('playerAttackScene');
+                    },
+                    onIncorrect: () => {
+                        this.takeDamage(10);
+                        this.showScene('bossAttackScene');
+                    },
+                    damage: 10
+                }
+            ],
+            null,
+            () => {
+                this.currentBattle = 3;  // Also set battle number when scene loads
+                this.createBossHealthUI(document.getElementById('description'));
+            }
+        ));
+
+        // Add the fourth final battle scene
+        this.scenes.set('finalBattle4', new Scene(
+            'finalBattle4',
+            'images/oni.png',
+            '<h1>Boss Battle</h1>How did women\'s rights change as Japan became a warrior society?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'All women gained the right to own property',
+                        'Women could become shogun if they were noble-born',
+                        'Female samurai had equal status to mail samurai',
+                        'Upper-class women lost freedoms, while peasant women had more autonomy'
+                    ],
+                    correct: 'Upper-class women lost freedoms, while peasant women had more autonomy',
+                    onCorrect: () => {
+                        this.takeBossDamage(10);
+                        this.updateBossHealthDisplay();
+                        this.currentBattle = 4;  // Set current battle number
+                        this.showScene('playerAttackScene');
+                    },
+                    onIncorrect: () => {
+                        this.takeDamage(10);
+                        this.showScene('bossAttackScene');
+                    },
+                    damage: 10
+                }
+            ],
+            null,
+            () => {
+                this.currentBattle = 4;  // Also set battle number when scene loads
+                this.createBossHealthUI(document.getElementById('description'));
+            }
+        ));
+
+        // Add the fifth final battle scene
+        this.scenes.set('finalBattle5', new Scene(
+            'finalBattle5',
+            'images/oni.png',
+            '<h1>Boss Battle</h1>Which of the following was a major cultural achievement in Feudal Japan?',
+            [
+                {
+                    text: 'Choose your answer',
+                    isQuiz: true,
+                    options: [
+                        'Kabuki theater was created for samurai entertainment',
+                        'The Tale of Genji, the world\'s first novel, was written',
+                        'Samurai wrote haiku poetry to record battle strategies',
+                        'Japanese architects built stone castles modeled after Chinese palaces'
+                    ],
+                    correct: 'The Tale of Genji, the world\'s first novel, was written',
+                    onCorrect: () => {
+                        this.takeBossDamage(10);
+                        this.updateBossHealthDisplay();
+                        this.currentBattle = 5;  // Set current battle number
+                        this.showScene('playerAttackScene');
+                    },
+                    onIncorrect: () => {
+                        this.takeDamage(10);
+                        this.showScene('bossAttackScene');
+                    },
+                    damage: 10
+                }
+            ],
+            null,
+            () => {
+                this.currentBattle = 5;  // Also set battle number when scene loads
+                this.createBossHealthUI(document.getElementById('description'));
+            }
         ));
 
         // Add more scenes here
@@ -688,10 +839,18 @@ class Game {
                 if (choice.onSelect) {
                     const shouldChangeScene = choice.onSelect();
                     if (shouldChangeScene !== false) {
-                        this.showScene(choice.nextScene);
+                        // Handle both function and string nextScene values
+                        const nextScene = typeof choice.nextScene === 'function'
+                            ? choice.nextScene()
+                            : choice.nextScene;
+                        this.showScene(nextScene);
                     }
                 } else {
-                    this.showScene(choice.nextScene);
+                    // Handle both function and string nextScene values
+                    const nextScene = typeof choice.nextScene === 'function'
+                        ? choice.nextScene()
+                        : choice.nextScene;
+                    this.showScene(nextScene);
                 }
             });
         }
