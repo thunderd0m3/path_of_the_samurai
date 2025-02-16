@@ -424,7 +424,33 @@ class Game {
             ]
         ));
 
-        // Update the final battle scene with new quiz options
+        // Update the boss attack scene to remove damage
+        this.scenes.set('bossAttackScene', new Scene(
+            'bossAttackScene',
+            'images/oni_miss.png',
+            '<h1>Boss Battle</h1>The oni demon attacks!',
+            [
+                {
+                    text: 'Continue fighting',
+                    nextScene: 'finalBattle'
+                }
+            ]
+        ));
+
+        // Update the player attack scene with first hit description
+        this.scenes.set('playerAttackScene', new Scene(
+            'playerAttackScene',
+            'images/oni_hit.png',
+            '<h1>Boss Battle</h1>You use your Katana to strike at the Oni\'s belly, knocking the wind out of him! You do 10 damage!',
+            [
+                {
+                    text: 'Attack again',
+                    nextScene: 'finalBattle'
+                }
+            ]
+        ));
+
+        // Update the final battle scene with fixed boss damage
         this.scenes.set('finalBattle', new Scene(
             'finalBattle',
             'images/oni.png',
@@ -440,15 +466,22 @@ class Game {
                         'Japan was invaded by Mongols'
                     ],
                     correct: 'Regents governed in place of the emperor',
-                    onCorrect: () => this.takeBossDamage(10),
-                    damage: 15,
+                    onCorrect: () => {
+                        this.takeBossDamage(10);  // Apply boss damage
+                        this.updateBossHealthDisplay();  // Force health display update
+                        this.showScene('playerAttackScene');  // Show attack scene
+                    },
+                    onIncorrect: () => {
+                        this.takeDamage(10);
+                        this.showScene('bossAttackScene');
+                    },
+                    damage: 10,
                     nextScene: 'finalBattle2'
                 }
             ],
             null,
             () => {
                 // Create boss health bar when scene loads
-                this.currentBossHealth = 50;  // Reset boss health
                 this.createBossHealthUI(document.getElementById('description'));
             }
         ));
@@ -628,12 +661,19 @@ class Game {
             button.textContent = option;
             button.addEventListener('click', () => {
                 if (option === quiz.correct) {
-                    this.showScene(quiz.nextScene);  // Just move to next scene without alert
+                    if (quiz.onCorrect) {
+                        quiz.onCorrect();
+                    }
+                    this.showScene(quiz.nextScene);
                 } else {
-                    alert('Wrong answer! Try again.');
-                    // Apply damage if specified
-                    if (quiz.damage) {
-                        this.takeDamage(quiz.damage);
+                    if (quiz.onIncorrect) {
+                        quiz.onIncorrect();
+                    } else {
+                        // Fallback to old behavior if no onIncorrect handler
+                        alert('Wrong answer! Try again.');
+                        if (quiz.damage) {
+                            this.takeDamage(quiz.damage);
+                        }
                     }
                 }
             });
