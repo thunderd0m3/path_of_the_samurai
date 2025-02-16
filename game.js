@@ -26,6 +26,7 @@ class Game {
         ];
         this.maxBossHealth = 50;
         this.currentBossHealth = 50;
+        this.bossHitCount = 0;  // Track number of successful hits
         this.initializeScenes();
         this.updateHealthDisplay();
         this.hideGameElements();
@@ -437,14 +438,35 @@ class Game {
             ]
         ));
 
-        // Update the player attack scene with first hit description
+        // Update the player attack scene with conditional button text
         this.scenes.set('playerAttackScene', new Scene(
             'playerAttackScene',
             'images/oni_hit.png',
-            '<h1>Boss Battle</h1>You use your Katana to strike at the Oni\'s belly, knocking the wind out of him! You do 10 damage!',
+            () => {
+                if (this.bossHitCount === 0) {
+                    return '<h1>Boss Battle</h1>You use your Katana to strike at the Oni\'s belly, knocking the wind out of him! You do 10 damage!';
+                } else if (this.bossHitCount === 1) {
+                    return '<h1>Boss Battle</h1>The Oni lunges at you with his club, but it is easily deflected by your helmet, giving you a chance to strike! You do 10 damage!';
+                } else if (this.bossHitCount === 2) {
+                    return '<h1>Boss Battle</h1>The Oni tries to kick you, but your strong armor absorbs it, and you manage to hit him in the knee! You do 10 damage!';
+                } else if (this.bossHitCount === 3) {
+                    return '<h1>Boss Battle</h1>You take advantage of the Oni\'s hurt knee and you strike with your Katana! You do 10 damage!';
+                } else if (this.bossHitCount === 4) {
+                    return '<h1>Boss Battle</h1>The furious Oni makes an attack, swinging his club and fist at you in enranged desperation. Your helmet deflects the club and your armor stops his fist. You use your Katana and land a final blow on his head for 10 damage!';
+                }
+            },
             [
                 {
-                    text: 'Attack again',
+                    text: () => this.bossHitCount === 4 ? 'Continue' : 'Attack again',
+                    onSelect: () => {
+                        this.bossHitCount++;
+                        // Check if this was the final hit
+                        if (this.currentBossHealth <= 0) {
+                            this.showScene('victoryScene');
+                            return false;  // Prevent default scene transition
+                        }
+                        return true;
+                    },
                     nextScene: 'finalBattle'
                 }
             ]
@@ -467,9 +489,9 @@ class Game {
                     ],
                     correct: 'Regents governed in place of the emperor',
                     onCorrect: () => {
-                        this.takeBossDamage(10);  // Apply boss damage
-                        this.updateBossHealthDisplay();  // Force health display update
-                        this.showScene('playerAttackScene');  // Show attack scene
+                        this.takeBossDamage(10);
+                        this.updateBossHealthDisplay();
+                        this.showScene('playerAttackScene');
                     },
                     onIncorrect: () => {
                         this.takeDamage(10);
@@ -481,9 +503,25 @@ class Game {
             ],
             null,
             () => {
-                // Create boss health bar when scene loads
                 this.createBossHealthUI(document.getElementById('description'));
             }
+        ));
+
+        // Add the victory scene
+        this.scenes.set('victoryScene', new Scene(
+            'victoryScene',
+            'images/game_complete.png',
+            '<h1>Victory!</h1><i>As the Oni falls, your journey through feudal Japan comes to an end. You have proven yourself a true samurai, mastering both knowledge and combat. The ancient spirits smile upon your victory, and your legend will be remembered for generations to come.</i>',
+            [
+                {
+                    text: 'Play Again',
+                    onSelect: () => {
+                        this.resetGame();
+                        return true;
+                    },
+                    nextScene: 'characterSelect'
+                }
+            ]
         ));
 
         // Add more scenes here
@@ -636,7 +674,10 @@ class Game {
     createChoiceButton(choice, container) {
         const button = document.createElement('button');
         button.className = 'choice-btn';
-        button.textContent = choice.text;
+        // Handle both function and string text
+        button.textContent = typeof choice.text === 'function'
+            ? choice.text()
+            : choice.text;
 
         // Check if button should be disabled
         if (choice.isDisabled && choice.isDisabled()) {
@@ -645,9 +686,13 @@ class Game {
         } else {
             button.addEventListener('click', () => {
                 if (choice.onSelect) {
-                    choice.onSelect();
+                    const shouldChangeScene = choice.onSelect();
+                    if (shouldChangeScene !== false) {
+                        this.showScene(choice.nextScene);
+                    }
+                } else {
+                    this.showScene(choice.nextScene);
                 }
-                this.showScene(choice.nextScene);
             });
         }
 
@@ -719,10 +764,6 @@ class Game {
     takeBossDamage(amount) {
         this.currentBossHealth = Math.max(0, this.currentBossHealth - amount);
         this.updateBossHealthDisplay();
-
-        if (this.currentBossHealth <= 0) {
-            this.showScene('victoryScene');  // We'll create this later
-        }
     }
 
     updateBossHealthDisplay() {
