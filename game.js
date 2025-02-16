@@ -141,7 +141,7 @@ class Game {
             ]
         ));
 
-        // Update the feudal Japan scene with skip option
+        // Update the feudal Japan scene to remove debug option
         this.scenes.set('feudalJapanScene', new Scene(
             'feudalJapanScene',
             'images/feudal_japan.png',
@@ -161,29 +161,6 @@ class Game {
                     text: 'Forest',
                     nextScene: 'forestScene',
                     isDisabled: () => this.inventory.some(item => item.id === 'helmet')
-                },
-                {
-                    text: '[DEBUG] Skip to Boss',
-                    onSelect: () => {
-                        // Add all required items to inventory
-                        this.addToInventory({
-                            id: 'katana',
-                            name: 'Katana',
-                            image: 'images/katana.jpg'
-                        });
-                        this.addToInventory({
-                            id: 'armor',
-                            name: 'Samurai Armor',
-                            image: 'images/armor.jpg'
-                        });
-                        this.addToInventory({
-                            id: 'helmet',
-                            name: 'Samurai Helmet',
-                            image: 'images/helmet.jpg'
-                        });
-                        return true;
-                    },
-                    nextScene: 'prepareForBattle'
                 }
             ],
             null,
@@ -426,7 +403,7 @@ class Game {
             ]
         ));
 
-        // Update the boss attack scene with onSelect handler
+        // Fix the boss attack scene with simple button
         this.scenes.set('bossAttackScene', new Scene(
             'bossAttackScene',
             'images/oni_miss.png',
@@ -434,16 +411,21 @@ class Game {
             [
                 {
                     text: 'Continue fighting',
-                    onSelect: () => {
-                        const nextScene = `finalBattle${this.currentBattle}`;
-                        this.showScene(nextScene);
-                        return false;  // Prevent default scene transition
+                    nextScene: () => {
+                        switch(this.currentBattle) {
+                            case 1: return 'finalBattle';
+                            case 2: return 'finalBattle2';
+                            case 3: return 'finalBattle3';
+                            case 4: return 'finalBattle4';
+                            case 5: return 'finalBattle5';
+                            default: return 'finalBattle';
+                        }
                     }
                 }
             ]
         ));
 
-        // Update the player attack scene with fixed battle progression
+        // Fix the player attack scene with proper progression
         this.scenes.set('playerAttackScene', new Scene(
             'playerAttackScene',
             'images/oni_hit.png',
@@ -459,6 +441,7 @@ class Game {
                 } else if (this.bossHitCount === 4) {
                     return '<h1>Boss Battle</h1>The furious Oni makes an attack, swinging his club and fist at you in enranged desperation. Your helmet deflects the club and your armor stops his fist. You use your Katana and land a final blow on his head for 10 damage!';
                 }
+                return '<h1>Boss Battle</h1>You strike at the Oni!';  // Default description
             },
             [
                 {
@@ -466,7 +449,7 @@ class Game {
                     onSelect: () => {
                         this.bossHitCount++;
                         // Check if this was the final hit
-                        if (this.currentBossHealth <= 0) {
+                        if (this.currentBossHealth <= 0 && this.bossHitCount >= 5) {
                             this.showScene('victoryScene');
                             return false;
                         }
